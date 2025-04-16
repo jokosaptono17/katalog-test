@@ -1,39 +1,243 @@
-<!DOCTYPE html>
-<html lang="id">
+<html>
+
+</html>
+
 <head>
-  <meta charset="UTF-8">
-  <title>TEST - Katalog Data</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 2em; background-color: #f7f7f7; }
-    table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-    th { background-color: #2c3e50; color: white; }
-    h1 { text-align: center; color: #2c3e50; }
-  </style>
+
+    <title>stopwatch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: black;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .time {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 300px;
+            color: white;
+            font-size: 200px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 30px;
+            margin-right: 30px;
+            padding: 30px;
+            border-bottom: 5px solid black;
+        }
+
+        .buttons button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 60px;
+        }
+
+        .mainstartBtn {
+            border-radius: 50%;
+            border: 5px solid #092911;
+            padding: 9px;
+        }
+
+        .startBtn {
+            background-color: #092911;
+            color: #176427;
+            border: none;
+        }
+
+        .mainlapBtn {
+            border-radius: 50%;
+            border: 5px solid #1C1C1E;
+            padding: 9px;
+        }
+
+        .lapresetBtn {
+            background-color: #1C1C1E;
+            color: white;
+            border: none;
+        }
+
+        .timerStarted {
+            background-color: #340E0B;
+            color: #BC3D43;
+        }
+
+        .timerstartedMain {
+            border: 5px solid #340E0B;
+        }
+
+        .lap {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 30px;
+            margin-right: 30px;
+            font-size: 60px;
+            color: white;
+        }
+    </style>
 </head>
+
 <body>
-  <h1>TEST - Katalog Data</h1>
-  <table id="data-table"></table>
+    <div class="container">
+        <div class="time">
+            <span id="minutes">00:</span>
+            <span id="seconds">00:</span>
+            <span id=" milisecond">00:</span>
+        </div>
 
-  <script>
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCUIoOMry97tGvxEFPC1I8sCxI2OJ4f1X3D2gDDqXayvWSCsjqOp9YOAqoWwIcVJVVXe7s8CzT5cgh/pub?gid=578128370&single=true&output=csv";
+        <div class="buttons">
+            <div class="mainLapBtn">
+                <button class="lapResetBtn">Lap</button>
+            </div>
 
-    fetch(csvUrl)
-      .then(res => res.text())
-      .then(csv => {
-        const rows = csv.trim().split("\n").map(row => row.split(","));
-        const table = document.getElementById("data-table");
-        
-        rows.forEach((row, index) => {
-          const tr = document.createElement("tr");
-          row.forEach(cell => {
-            const el = document.createElement(index === 0 ? "th" : "td");
-            el.textContent = cell;
-            tr.appendChild(el);
-          });
-          table.appendChild(tr);
-        });
-      });
-  </script>
+            <div class="mainStartBtn">
+                <button class="startBtn">Start</button>
+            </div>
+        </div>
+
+        <div class="laps">
+
+        </div>
+    </div>
+
+
+    <script>
+        const startBtn = document.querySelector(`.startBtn`);
+        const mainStartBtn = document.querySelector(`.mainLapBtn`);
+
+        const lapResetBtn = document.querySelector(`.lapResetBtn`);
+        const mainLapBtn = document.querySelector(`.mainLapBtn`);
+
+        const laps = document.querySelector(`.laps`);
+
+        let milisec = 0;
+        let sec = 0;
+        let min = 0;
+
+        let m = 0;
+        let s = 0;
+        let ms = 0;
+
+        let time = document.querySelector(`.time`);
+        let int = null;
+
+        let isTimeStarted = false;
+
+        let allLaps = [];
+        let lapsNumber = 1;
+
+        startBtn.addEventListener(`click`, () => {
+            if (isTimeStarted === false) {
+                int = setInterval(displayTimer, 10);
+            } else {
+                clearInterval(int);
+            }
+            changeStartBtn();
+            checkIsresetAvailable();
+        })
+
+        function displayTimer() {
+            milisec++;
+
+            if (milisec >= 99) {
+                sec++;
+                milisec = 0;
+            }
+            if (sec >= 60) {
+                min++;
+                sec = 0;
+            }
+
+            m = min < 10 ? "0" + min : min;
+            s = sec < 10 ? "0" + sec : sec;
+            ms = milisec < 10 ? "0" + milisec : milisec;
+
+            time.innerHTML = `${m}:${s},${ms}`;
+
+        }
+
+        function changeStartBtn() {
+            if (isTimeStarted === false) {
+                isTimeStarted = true;
+
+                startBtn.innerHTML = "stop";
+                startBtn.classList.add("timerStarted");
+                mainStartBtn.classList.add("timerStartedMain")
+            } else {
+                isTimeStarted = false;
+
+                startBtn.innerHTML = "start";
+                startBtn.classList.remove("timerStarted");
+                mainStartBtn.classList.remove("timerStartedMain")
+            }
+        }
+
+        function checkIsresetAvailable() {
+            if (isTimeStarted === false) {
+                lapResetBtn.innerHTML = "reset";
+            } else {
+                lapResetBtn.innerHTML = "Lap";
+            }
+        }
+
+        function displayLaps() {
+            lapsNumber++;
+            laps.innerHTML = ""
+            if (allLaps.length > 0) {
+                allLaps.map(item => {
+                    laps.innerHTML += `
+            <div class = "lap">
+                <span> Lap ${item.number}</span>
+                <span> ${item.time} </span>
+            </div>
+            `
+                })
+            }
+        }
+
+        lapResetBtn.addEventListener(`click`, () => {
+            if (isTimeStarted === false) { // reset click
+                clearInterval(int);
+                m = 0;
+                s = 0;
+                ms = 0;
+
+                milisec = 0;
+                sec = 0;
+                min = 0;
+                time.innerHTML = "00:00,00"
+
+                allLaps = [];
+                laps.innerHTML = "";
+                lapsNumber = 1;
+
+            } else {
+                allLaps.push(
+                    {
+                        time: m + ":" + s + "," + ms,
+                        number: lapsNumber,
+                    }
+                )
+                displayLaps();
+                console.log(allLaps)
+
+            }
+        })
+
+
+    </script>
 </body>
+
 </html>
