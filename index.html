@@ -1,181 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- favicon -->
-    <link rel="shortcut icon" href="img/plant-asto.png">
-
-    <title>plant_Asto_Innovation</title>
-
-    <!-- font  -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap"
-        rel="stylesheet">
-
-    <!-- feather icon -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
-    <!-- my style -->
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>TEST - Katalog Data</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background-color: #f7f7f7; }
+    table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #2c3e50; color: white; }
+    h1 { text-align: center; color: #2c3e50; }
+    #search-input { margin-bottom: 1em; padding: 10px; width: 100%; font-size: 16px; }
+  </style>
 </head>
-
 <body>
+  <h1>TEST - Katalog Data</h1>
 
-    <!-- Navbar start -->
-    <nav class="navbar">
-        <!-- <img src="img/plant-asto.png" alt="logo asto"> -->
-        <a href="#" class="navbar-logo"><span>Asto</span>One<span>App</span>.</a>
-        <div class="navbar-nav">
-            <a href="#">Home</a>
-            <a href="#about">Tentang kami</a>
-            <a href="#menu">Pilihan</a>
-            <a href="#contact">Kontak</a>
-        </div>
-        <div>
-            <div id="DisplayClock" class="clock" onload="showTime()"></div>
-        </div>
-        <div class="navbar-extra">
-            <a href="#" id="search"><i data-feather="search"></i></a>
-            <a href="#" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
-            <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
-        </div>
+  <input type="text" id="search-input" placeholder="Cari di tabel..." onkeyup="filterTable()">
 
+  <table id="data-table"></table>
 
-    </nav>
-    <!-- Navbar end -->
+  <script>
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCUIoOMry97tGvxEFPC1I8sCxI2OJ4f1X3D2gDDqXayvWSCsjqOp9YOAqoWwIcVJVVXe7s8CzT5cgh/pub?gid=578128370&single=true&output=csv";
 
-    <!-- Hero section start -->
-    <section class="hero" id="home">
-        <main class="content">
-            <h1><span>Kita</span>Satu <span>Kita</span>Bisa <span>Kita</span>Hebat</h1>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis quasi nisi, sapiente suscipit odio a,
-                commodi, quis asperiores aliquid ipsa non eum consectetur? Voluptatum, pariatur fuga? Harum eveniet
-                magni repellat?</p>
-            <a href="#" class="cta">Mulai sekarang</a>
-        </main>
-    </section>
-    <!--Hero section end  -->
+    fetch(csvUrl)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.trim().split("\n").map(row => row.split(","));
+        const table = document.getElementById("data-table");
 
-    <!-- About section start -->
-    <section id="about" class="about">
-        <h2><span>Tentang</span> Kami</h2>
+        rows.forEach((row, index) => {
+          const tr = document.createElement("tr");
+          row.forEach(cell => {
+            const el = document.createElement(index === 0 ? "th" : "td");
+            el.textContent = cell;
+            tr.appendChild(el);
+          });
+          table.appendChild(tr);
+        });
+      });
 
-        <div class="row">
-            <div class="about-img">
-                <img src="img/tentang-kami.jpg" alt="Tentang Kami">
-            </div>
-            <div class="content">
-                <h3> <span>As The</span> Big Company <br><span> As The</span> Integrated Mining Services</h3>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt quis repudiandae fugit dolor
-                    praesentium vero molestiae iusto dolore repellat in!</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Est maiores illo quia ullam labore quo rem
-                    impedit tempore, corporis aut.</p>
-            </div>
-        </div>
+    function filterTable() {
+      const input = document.getElementById("search-input").value.toLowerCase();
+      const rows = document.querySelectorAll("#data-table tr");
 
-    </section>
-    <!-- About section end -->
-
-    <!-- menu section start -->
-    <section id="menu" class="menu">
-        <h2><span>Our</span> Services</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea repellendus provident, neque illo at ipsam!</p>
-
-        <div class="row">
-            <div class="menu-card">
-                <img src="img/menu/s1.png" alt="site support monitoring">
-                <h3 class="service-card-title">OIL STATION MONITORING</h3>
-                <P class="service-card-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio
-                    est
-                    doloribus, voluptates a rem aspernatur.</P>
-            </div>
-            <div class="menu-card">
-                <a href="192.168.43.182">
-                    <img src="img/menu/s2.png" alt="site support monitoring"></a>
-                <h3 class="service-card-title">VEHICLE MONITORING</h3>
-                <P class="service-card-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio
-                    est
-                    doloribus, voluptates a rem aspernatur.</P>
-                </a>
-            </div>
-            <div class="menu-card">
-                <img src="img/menu/s3.png" alt="site support monitoring">
-                <h3 class="service-card-title">NEW FAULT CODE SCANIA XT</h3>
-                <P class="service-card-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio est
-                    doloribus, voluptates a rem aspernatur.</P>
-            </div>
-            <div class="menu-card">
-                <img src="img/menu/s4.png" alt="site support monitoring">
-                <h3 class="service-card-title">ABOUT KNOWLEDGE</h3>
-                <P class="service-card-description">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio est
-                    doloribus, voluptates a rem aspernatur.</P>
-            </div>
-        </div>
-    </section>
-    <!-- menu section end -->
-
-    <!-- Contact section start -->
-    <section id="contact" class="contact">
-        <h2><span>Kontak </span> Kami</h2>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam autem cumque placeat aspernatur molestias
-            quam
-            eos sint quaerat quibusdam quo!</p>
-
-        <div class="row">
-            <iframe <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19301.125538201966!2d114.61652384204493!3d-1.133350176712695!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dfbdf8f13e3b423%3A0x6b41e62179a3f051!2sSupply%20Management%20KPP%20ASTO!5e1!3m2!1sid!2sid!4v1690346894920!5m2!1sid!2sid"
-                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
-            <form action="">
-                <div class="input-group">
-                    <i data-feather="user"></i>
-                    <input type="text" placeholder="nama">
-                </div>
-                <div class="input-group">
-                    <i data-feather="mail"></i>
-                    <input type="text" placeholder="email">
-                </div>
-                <div class="input-group">
-                    <i data-feather="phone"></i>
-                    <input type="text" placeholder="no.hp">
-                </div>
-                <button type="submit" class="btn">kirim pesan</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Contact section end -->
-
-    <!-- footer start -->
-    <footer>
-        <div class="social">
-            <a href="#"><i data-feather="instagram"></i></a>
-            <a href="#"><i data-feather="twitter"></i></a>
-            <a href="#"><i data-feather="facebook"></i></a>
-        </div>
-        <div class="links">
-            <a href="#home">Home</a>
-            <a href="#about">Tentang Kami</a>
-            <a href="#menu">Pilihan </a>
-            <a href="#contact">Kontak</a>
-        </div>
-        <div class="credit">
-            <p>Created with ❤️ by <a href="">jokosaptono</a>.| &copy;2023</p>
-        </div>
-    </footer>
-    <!-- footer end -->
-
-    <!-- Contact section end -->
-
-    <!-- feather icon -->
-    <script>
-        feather.replace()
-    </script>
-
-    <!-- My javascript -->
-    <script src="js/script.js"></script>
+      rows.forEach((row, index) => {
+        if (index === 0) return; // lewati baris header
+        const cells = row.querySelectorAll("td");
+        const rowText = Array.from(cells).map(td => td.textContent.toLowerCase()).join(" ");
+        row.style.display = rowText.includes(input) ? "" : "none";
+      });
+    }
+  </script>
 </body>
-
 </html>
