@@ -9,10 +9,14 @@
     th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
     th { background-color: #2c3e50; color: white; }
     h1 { text-align: center; color: #2c3e50; }
+    #search-input { margin-bottom: 1em; padding: 10px; width: 100%; font-size: 16px; }
   </style>
 </head>
 <body>
   <h1>TEST - Katalog Data</h1>
+
+  <input type="text" id="search-input" placeholder="Cari di tabel..." onkeyup="filterTable()">
+
   <table id="data-table"></table>
 
   <script>
@@ -23,7 +27,7 @@
       .then(csv => {
         const rows = csv.trim().split("\n").map(row => row.split(","));
         const table = document.getElementById("data-table");
-        
+
         rows.forEach((row, index) => {
           const tr = document.createElement("tr");
           row.forEach(cell => {
@@ -34,6 +38,18 @@
           table.appendChild(tr);
         });
       });
+
+    function filterTable() {
+      const input = document.getElementById("search-input").value.toLowerCase();
+      const rows = document.querySelectorAll("#data-table tr");
+
+      rows.forEach((row, index) => {
+        if (index === 0) return; // lewati baris header
+        const cells = row.querySelectorAll("td");
+        const rowText = Array.from(cells).map(td => td.textContent.toLowerCase()).join(" ");
+        row.style.display = rowText.includes(input) ? "" : "none";
+      });
+    }
   </script>
 </body>
 </html>
